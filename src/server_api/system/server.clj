@@ -1,19 +1,21 @@
 (ns server-api.system.server
   (:require [ring.adapter.jetty :as jetty]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [compojure.core :as compojure]
+            [compojure.route :as compojure-route]))
 
 ;; HTTP server component.
 
-(defn handler [request]
-  {:status 200
-   :headers {"Content-Type" "text/plain"}
-   :body "Hello world! Viva!!"})
+(compojure/defroutes app ;; This will define all the routes for the server!!
+  (compojure/GET "/" [] "<h1>WELCOME TO THE HOME PAGE! MUAHAHA</h1>")
+  (compojure/GET "/test" [] "<h1>This is a test. Wow!</h1>")
+  (compojure-route/not-found "<h1>HUH? PAGE NOT FOUND.</h1>"))
 
 (defn start-server
   "Helper function to start server."
   [port]
   (let [server
-        (jetty/run-jetty handler
+        (jetty/run-jetty app
                          {:port (Integer. port)})]
     server))
 
